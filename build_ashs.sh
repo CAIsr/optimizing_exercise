@@ -1,5 +1,5 @@
 
-imageName='ants_fsl_robex'
+imageName='ashs'
 buildDate=`date +%Y%m%d`
 
 #install neurodocker
@@ -11,19 +11,21 @@ buildDate=`date +%Y%m%d`
 neurodocker generate \
 	--base ubuntu:xenial \
 	--pkg-manager apt \
-	--copy ROBEXv12.linux64.tar.gz /ROBEXv12.linux64.tar.gz \
-	--run="tar -xf /ROBEXv12.linux64.tar.gz" \
-	--run="rm /ROBEXv12.linux64.tar.gz" \
-	--run="ln -s /ROBEX/runROBEX.sh /bin" \
+	--copy ashs_atlas_upennpmc_20170810.tar /ashs_atlas_upennpmc_20170810.tar \
+        --copy ashs-fastashs-20170915.zip /ashs-fastashs-20170915.zip \
+	--run="tar -xf /ashs_atlas_upennpmc_20170810.tar" \
+	--run="unzip /ashs-fastashs-20170915.zip" \
+	--run="rm /ashs_atlas_upennpmc_20170810.tar" \
+        --run="rm /ashs-fastashs-20170915.zip" \
+        --run="printf '#!/bin/bash\nls -la' > /usr/bin/ll" \
+        --run="chmod +x /usr/bin/ll" \
+	--env ASHS_ROOT=/ashs-1.0.0 \
         --workdir /90days \
         --workdir /30days \
 	--workdir /QRISdata \
-        --workdir /RDS \
+       	--workdir /RDS \
 	--workdir /data \
-	--workdir /short \
-	--ants version=2.2.0 \
-	--fsl version=5.0.10 \
-	-e FSLOUTPUTTYPE=NIFTI_GZ \
+        --workdir /short \
 	--user=neuro \
 	--workdir /home/neuro \
 	--no-check-urls \
@@ -31,7 +33,9 @@ neurodocker generate \
 
 docker build -t ${imageName}:$buildDate -f  Dockerfile.${imageName} .
 
-#docker run -it ${imageName}:$buildDate
+docker run -it ${imageName}:$buildDate
+
+exit 0
 
 docker tag ${imageName}:$buildDate caid/${imageName}:$buildDate
 #docker login

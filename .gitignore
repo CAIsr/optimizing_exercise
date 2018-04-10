@@ -4,3 +4,6 @@ testfiles/
 ROBEXv12.linux64.tar.gz
 ROBEXv12.source.all_platforms.zip
 magnitude.nii.nii
+*.zip
+*.tar.gz
+*.tar

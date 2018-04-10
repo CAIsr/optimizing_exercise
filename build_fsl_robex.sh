@@ -19,6 +19,8 @@ neurodocker generate \
         --workdir /30days \
 	--workdir /QRISdata \
        	--workdir /RDS \
+	--workdir /data \
+        --workdir /short \
 	--ants version=2.2.0 \
 	--fsl version=5.0.10 \
 	-e FSLOUTPUTTYPE=NIFTI_GZ \
