@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-03-05 11:35:39
+# Timestamp: 2018-03-10 20:40:39
 
 FROM ubuntu:xenial
 
@@ -43,21 +43,22 @@ RUN rm /ROBEXv12.linux64.tar.gz
 # User-defined instruction
 RUN ln -s /ROBEX/runROBEX.sh /bin
 
-RUN apt-get update -qq \
-    && apt-get install -y -q --no-install-recommends build-essential \
-                                                     libgtk2.0-dev \
-                                                     libgtk-3-dev \
-                                                     libwebkitgtk-dev \
-                                                     libwebkitgtk-3.0-dev \
-                                                     libjpeg-turbo8-dev \
-                                                     libtiff5-dev \
-                                                     libsdl1.2-dev \
-                                                     libgstreamer1.0-dev \
-                                                     libgstreamer-plugins-base1.0-dev \
-                                                     libnotify-dev \
-                                                     freeglut3-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+WORKDIR /90days
+
+WORKDIR /30days
+
+WORKDIR /QRISdata
+
+WORKDIR /RDS
+
+#-------------------
+# Install ANTs 2.2.0
+#-------------------
+RUN echo "Downloading ANTs ..." \
+    && curl -sSL --retry 5 https://dl.dropbox.com/s/2f4sui1z6lcgyek/ANTs-Linux-centos5_x86_64-v2.2.0-0740f91.tar.gz \
+    | tar zx -C /opt
+ENV ANTSPATH=/opt/ants \
+    PATH=/opt/ants:$PATH
 
 #-----------------------------------------------------------
 # Install FSL v5.0.10
@@ -78,6 +79,8 @@ RUN apt-get update -qq && apt-get install -yq --no-install-recommends bc dc libf
     && sed -i '$isource $FSLDIR/etc/fslconf/fsl.sh' $ND_ENTRYPOINT
 ENV FSLDIR=/opt/fsl \
     PATH=/opt/fsl/bin:$PATH
+
+ENV FSLOUTPUTTYPE="NIFTI_GZ"
 
 # Create new user: neuro
 RUN useradd --no-user-group --create-home --shell /bin/bash neuro
@@ -116,26 +119,37 @@ RUN echo '{ \
     \n      "ln -s /ROBEX/runROBEX.sh /bin" \
     \n    ], \
     \n    [ \
-    \n      "install", \
-    \n      [ \
-    \n        "build-essential", \
-    \n        "libgtk2.0-dev", \
-    \n        "libgtk-3-dev", \
-    \n        "libwebkitgtk-dev", \
-    \n        "libwebkitgtk-3.0-dev", \
-    \n        "libjpeg-turbo8-dev", \
-    \n        "libtiff5-dev", \
-    \n        "libsdl1.2-dev", \
-    \n        "libgstreamer1.0-dev", \
-    \n        "libgstreamer-plugins-base1.0-dev", \
-    \n        "libnotify-dev", \
-    \n        "freeglut3-dev" \
-    \n      ] \
+    \n      "workdir", \
+    \n      "/90days" \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/30days" \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/QRISdata" \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/RDS" \
+    \n    ], \
+    \n    [ \
+    \n      "ants", \
+    \n      { \
+    \n        "version": "2.2.0" \
+    \n      } \
     \n    ], \
     \n    [ \
     \n      "fsl", \
     \n      { \
     \n        "version": "5.0.10" \
+    \n      } \
+    \n    ], \
+    \n    [ \
+    \n      "env", \
+    \n      { \
+    \n        "FSLOUTPUTTYPE": "NIFTI_GZ" \
     \n      } \
     \n    ], \
     \n    [ \
@@ -147,6 +161,6 @@ RUN echo '{ \
     \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-03-05 11:35:39", \
+    \n  "generation_timestamp": "2018-03-10 20:40:39", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json

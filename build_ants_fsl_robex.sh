@@ -1,5 +1,5 @@
 
-imageName='fsl_robex'
+imageName='fsl_ants_robex'
 buildDate=`date +%Y%m%d`
 
 #install neurodocker
@@ -18,7 +18,7 @@ neurodocker generate \
         --workdir /90days \
         --workdir /30days \
 	--workdir /QRISdata \
-       	--workdir /RDS \
+        --workdir /RDS \
 	--ants version=2.2.0 \
 	--fsl version=5.0.10 \
 	-e FSLOUTPUTTYPE=NIFTI_GZ \
