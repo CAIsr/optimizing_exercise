@@ -11,7 +11,7 @@ buildDate=`date +%Y%m%d`
 neurodocker generate \
 	--base ubuntu:xenial \
 	--pkg-manager apt \
-	--install libxtst6 \
+	--install libxt6 \
 	--copy ashs_atlas_upennpmc_20170810 /ashs_atlas_upennpmc_20170810 \
         --copy ashs-1.0.0/ /ashs-1.0.0 \
         --run="printf '#!/bin/bash\nls -la' > /usr/bin/ll" \
@@ -44,6 +44,7 @@ docker push caid/${imageName}:latest
 echo "BootStrap:docker" > Singularity.${imageName}
 echo "From:caid/${imageName}" >> Singularity.${imageName}
 
+rm ${imageName}_${buildDate}.simg
 sudo singularity build ${imageName}_${buildDate}.simg Singularity.${imageName}
 
 #singularity shell --bind $PWD:/data ${imageName}_${buildDate}.simg

@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-04-13 11:39:17
+# Timestamp: 2018-04-13 11:28:58
 
 FROM ubuntu:xenial
 
@@ -32,22 +32,16 @@ RUN apt-get update -qq && apt-get install -yq --no-install-recommends  \
     && chmod -R 777 /neurodocker && chmod a+s /neurodocker
 ENTRYPOINT ["/neurodocker/startup.sh"]
 
-RUN apt-get update -qq \
-    && apt-get install -y -q --no-install-recommends libxt6 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-COPY ["ashs_atlas_upennpmc_20170810", "/ashs_atlas_upennpmc_20170810"]
-
-COPY ["ashs-1.0.0/", "/ashs-1.0.0"]
+COPY ["ROBEXv12.linux64.tar.gz", "/ROBEXv12.linux64.tar.gz"]
 
 # User-defined instruction
-RUN printf '#!/bin/bash\nls -la' > /usr/bin/ll
+RUN tar -xf /ROBEXv12.linux64.tar.gz
 
 # User-defined instruction
-RUN chmod +x /usr/bin/ll
+RUN rm /ROBEXv12.linux64.tar.gz
 
-ENV ASHS_ROOT="/ashs-1.0.0"
+# User-defined instruction
+RUN ln -s /ROBEX/runROBEX.sh /bin
 
 WORKDIR /90days
 
@@ -60,6 +54,37 @@ WORKDIR /RDS
 WORKDIR /data
 
 WORKDIR /short
+
+#-------------------
+# Install ANTs 2.2.0
+#-------------------
+RUN echo "Downloading ANTs ..." \
+    && curl -sSL --retry 5 https://dl.dropbox.com/s/2f4sui1z6lcgyek/ANTs-Linux-centos5_x86_64-v2.2.0-0740f91.tar.gz \
+    | tar zx -C /opt
+ENV ANTSPATH=/opt/ants \
+    PATH=/opt/ants:$PATH
+
+#-----------------------------------------------------------
+# Install FSL v5.0.10
+# FSL is non-free. If you are considering commerical use
+# of this Docker image, please consult the relevant license:
+# https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Licence
+#-----------------------------------------------------------
+RUN apt-get update -qq && apt-get install -yq --no-install-recommends bc dc libfontconfig1 libfreetype6 libgl1-mesa-dev libglu1-mesa-dev libgomp1 libice6 libxcursor1 libxft2 libxinerama1 libxrandr2 libxrender1 libxt6 file \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && echo "Downloading FSL ..." \
+    && curl -sSL --retry 5 https://fsl.fmrib.ox.ac.uk/fsldownloads/fsl-5.0.10-centos6_64.tar.gz \
+    | tar zx -C /opt \
+    && /bin/bash /opt/fsl/etc/fslconf/fslpython_install.sh -q -f /opt/fsl \
+    && sed -i '$iecho Some packages in this Docker container are non-free' $ND_ENTRYPOINT \
+    && sed -i '$iecho If you are considering commercial use of this container, please consult the relevant license:' $ND_ENTRYPOINT \
+    && sed -i '$iecho https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/Licence' $ND_ENTRYPOINT \
+    && sed -i '$isource $FSLDIR/etc/fslconf/fsl.sh' $ND_ENTRYPOINT
+ENV FSLDIR=/opt/fsl \
+    PATH=/opt/fsl/bin:$PATH
+
+ENV FSLOUTPUTTYPE="NIFTI_GZ"
 
 # Create new user: neuro
 RUN useradd --no-user-group --create-home --shell /bin/bash neuro
@@ -79,38 +104,23 @@ RUN echo '{ \
     \n      "ubuntu:xenial" \
     \n    ], \
     \n    [ \
-    \n      "install", \
-    \n      [ \
-    \n        "libxt6" \
-    \n      ] \
-    \n    ], \
-    \n    [ \
     \n      "copy", \
     \n      [ \
-    \n        "ashs_atlas_upennpmc_20170810", \
-    \n        "/ashs_atlas_upennpmc_20170810" \
-    \n      ] \
-    \n    ], \
-    \n    [ \
-    \n      "copy", \
-    \n      [ \
-    \n        "ashs-1.0.0/", \
-    \n        "/ashs-1.0.0" \
+    \n        "ROBEXv12.linux64.tar.gz", \
+    \n        "/ROBEXv12.linux64.tar.gz" \
     \n      ] \
     \n    ], \
     \n    [ \
     \n      "run", \
-    \n      "printf '"'"'#!/bin/bash\\\nls -la'"'"' > /usr/bin/ll" \
+    \n      "tar -xf /ROBEXv12.linux64.tar.gz" \
     \n    ], \
     \n    [ \
     \n      "run", \
-    \n      "chmod +x /usr/bin/ll" \
+    \n      "rm /ROBEXv12.linux64.tar.gz" \
     \n    ], \
     \n    [ \
-    \n      "env", \
-    \n      { \
-    \n        "ASHS_ROOT": "/ashs-1.0.0" \
-    \n      } \
+    \n      "run", \
+    \n      "ln -s /ROBEX/runROBEX.sh /bin" \
     \n    ], \
     \n    [ \
     \n      "workdir", \
@@ -137,6 +147,24 @@ RUN echo '{ \
     \n      "/short" \
     \n    ], \
     \n    [ \
+    \n      "ants", \
+    \n      { \
+    \n        "version": "2.2.0" \
+    \n      } \
+    \n    ], \
+    \n    [ \
+    \n      "fsl", \
+    \n      { \
+    \n        "version": "5.0.10" \
+    \n      } \
+    \n    ], \
+    \n    [ \
+    \n      "env", \
+    \n      { \
+    \n        "FSLOUTPUTTYPE": "NIFTI_GZ" \
+    \n      } \
+    \n    ], \
+    \n    [ \
     \n      "user", \
     \n      "neuro" \
     \n    ], \
@@ -145,6 +173,6 @@ RUN echo '{ \
     \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-04-13 11:39:17", \
+    \n  "generation_timestamp": "2018-04-13 11:28:58", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json
