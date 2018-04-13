@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-04-13 11:39:17
+# Timestamp: 2018-04-13 14:18:22
 
 FROM ubuntu:xenial
 
@@ -34,6 +34,9 @@ ENTRYPOINT ["/neurodocker/startup.sh"]
 
 RUN apt-get update -qq \
     && apt-get install -y -q --no-install-recommends libxt6 \
+                                                     libxext6 \
+                                                     libxtst6 \
+                                                     libgl1-mesa-glx \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -81,7 +84,10 @@ RUN echo '{ \
     \n    [ \
     \n      "install", \
     \n      [ \
-    \n        "libxt6" \
+    \n        "libxt6", \
+    \n        "libxext6", \
+    \n        "libxtst6", \
+    \n        "libgl1-mesa-glx" \
     \n      ] \
     \n    ], \
     \n    [ \
@@ -145,6 +151,6 @@ RUN echo '{ \
     \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-04-13 11:39:17", \
+    \n  "generation_timestamp": "2018-04-13 14:18:22", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json

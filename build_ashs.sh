@@ -11,7 +11,7 @@ buildDate=`date +%Y%m%d`
 neurodocker generate \
 	--base ubuntu:xenial \
 	--pkg-manager apt \
-	--install libxt6 \
+	--install libxt6 libxext6 libxtst6 libgl1-mesa-glx \
 	--copy ashs_atlas_upennpmc_20170810 /ashs_atlas_upennpmc_20170810 \
         --copy ashs-1.0.0/ /ashs-1.0.0 \
         --run="printf '#!/bin/bash\nls -la' > /usr/bin/ll" \
