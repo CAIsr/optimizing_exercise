@@ -1,2 +1,4 @@
 *.simg
 .git
+*.tar
+*.zip

@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-04-10 17:48:54
+# Timestamp: 2018-04-13 11:08:11
 
 FROM ubuntu:xenial
 
@@ -32,21 +32,14 @@ RUN apt-get update -qq && apt-get install -yq --no-install-recommends  \
     && chmod -R 777 /neurodocker && chmod a+s /neurodocker
 ENTRYPOINT ["/neurodocker/startup.sh"]
 
-COPY ["ashs_atlas_upennpmc_20170810.tar", "/ashs_atlas_upennpmc_20170810.tar"]
+RUN apt-get update -qq \
+    && apt-get install -y -q --no-install-recommends libxtst6 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY ["ashs-fastashs-20170915.zip", "/ashs-fastashs-20170915.zip"]
+COPY ["ashs_atlas_upennpmc_20170810", "/ashs_atlas_upennpmc_20170810"]
 
-# User-defined instruction
-RUN tar -xf /ashs_atlas_upennpmc_20170810.tar
-
-# User-defined instruction
-RUN unzip /ashs-fastashs-20170915.zip
-
-# User-defined instruction
-RUN rm /ashs_atlas_upennpmc_20170810.tar
-
-# User-defined instruction
-RUN rm /ashs-fastashs-20170915.zip
+COPY ["ashs-1.0.0/", "/ashs-1.0.0"]
 
 # User-defined instruction
 RUN printf '#!/bin/bash\nls -la' > /usr/bin/ll
@@ -86,34 +79,24 @@ RUN echo '{ \
     \n      "ubuntu:xenial" \
     \n    ], \
     \n    [ \
-    \n      "copy", \
+    \n      "install", \
     \n      [ \
-    \n        "ashs_atlas_upennpmc_20170810.tar", \
-    \n        "/ashs_atlas_upennpmc_20170810.tar" \
+    \n        "libxtst6" \
     \n      ] \
     \n    ], \
     \n    [ \
     \n      "copy", \
     \n      [ \
-    \n        "ashs-fastashs-20170915.zip", \
-    \n        "/ashs-fastashs-20170915.zip" \
+    \n        "ashs_atlas_upennpmc_20170810", \
+    \n        "/ashs_atlas_upennpmc_20170810" \
     \n      ] \
     \n    ], \
     \n    [ \
-    \n      "run", \
-    \n      "tar -xf /ashs_atlas_upennpmc_20170810.tar" \
-    \n    ], \
-    \n    [ \
-    \n      "run", \
-    \n      "unzip /ashs-fastashs-20170915.zip" \
-    \n    ], \
-    \n    [ \
-    \n      "run", \
-    \n      "rm /ashs_atlas_upennpmc_20170810.tar" \
-    \n    ], \
-    \n    [ \
-    \n      "run", \
-    \n      "rm /ashs-fastashs-20170915.zip" \
+    \n      "copy", \
+    \n      [ \
+    \n        "ashs-1.0.0/", \
+    \n        "/ashs-1.0.0" \
+    \n      ] \
     \n    ], \
     \n    [ \
     \n      "run", \
@@ -162,6 +145,6 @@ RUN echo '{ \
     \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-04-10 17:48:54", \
+    \n  "generation_timestamp": "2018-04-13 11:08:11", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json

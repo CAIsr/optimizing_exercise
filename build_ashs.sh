@@ -11,12 +11,9 @@ buildDate=`date +%Y%m%d`
 neurodocker generate \
 	--base ubuntu:xenial \
 	--pkg-manager apt \
-	--copy ashs_atlas_upennpmc_20170810.tar /ashs_atlas_upennpmc_20170810.tar \
-        --copy ashs-fastashs-20170915.zip /ashs-fastashs-20170915.zip \
-	--run="tar -xf /ashs_atlas_upennpmc_20170810.tar" \
-	--run="unzip /ashs-fastashs-20170915.zip" \
-	--run="rm /ashs_atlas_upennpmc_20170810.tar" \
-        --run="rm /ashs-fastashs-20170915.zip" \
+	--install libxtst6 \
+	--copy ashs_atlas_upennpmc_20170810 /ashs_atlas_upennpmc_20170810 \
+        --copy ashs-1.0.0/ /ashs-1.0.0 \
         --run="printf '#!/bin/bash\nls -la' > /usr/bin/ll" \
         --run="chmod +x /usr/bin/ll" \
 	--env ASHS_ROOT=/ashs-1.0.0 \
