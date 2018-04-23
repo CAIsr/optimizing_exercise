@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-04-23 10:59:55
+# Timestamp: 2018-04-23 12:07:39
 
 FROM ubuntu:xenial
 
@@ -42,6 +42,12 @@ RUN rm /ROBEXv12.linux64.tar.gz
 
 # User-defined instruction
 RUN ln -s /ROBEX/runROBEX.sh /bin
+
+# User-defined instruction
+RUN printf '#!/bin/bash\nls -la' > /usr/bin/ll
+
+# User-defined instruction
+RUN chmod +x /usr/bin/ll
 
 WORKDIR /proc_temp
 
@@ -125,6 +131,14 @@ RUN echo '{ \
     \n      "ln -s /ROBEX/runROBEX.sh /bin" \
     \n    ], \
     \n    [ \
+    \n      "run", \
+    \n      "printf '"'"'#!/bin/bash\\\nls -la'"'"' > /usr/bin/ll" \
+    \n    ], \
+    \n    [ \
+    \n      "run", \
+    \n      "chmod +x /usr/bin/ll" \
+    \n    ], \
+    \n    [ \
     \n      "workdir", \
     \n      "/proc_temp" \
     \n    ], \
@@ -179,6 +193,6 @@ RUN echo '{ \
     \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-04-23 10:59:55", \
+    \n  "generation_timestamp": "2018-04-23 12:07:39", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json
