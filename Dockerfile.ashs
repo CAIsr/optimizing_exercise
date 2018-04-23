@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-04-13 14:18:22
+# Timestamp: 2018-04-23 10:56:19
 
 FROM ubuntu:xenial
 
@@ -37,6 +37,18 @@ RUN apt-get update -qq \
                                                      libxext6 \
                                                      libxtst6 \
                                                      libgl1-mesa-glx \
+                                                     libc6 \
+                                                     libice6 \
+                                                     libsm6 \
+                                                     libx11-6 \
+                                                     libxt6:i386 \
+                                                     libxext6:i386 \
+                                                     libxtst6:i386 \
+                                                     libgl1-mesa-glx:i386 \
+                                                     libc6:i386 \
+                                                     libice6:i386 \
+                                                     libsm6:i386 \
+                                                     libx11-6:i386 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -51,6 +63,10 @@ RUN printf '#!/bin/bash\nls -la' > /usr/bin/ll
 RUN chmod +x /usr/bin/ll
 
 ENV ASHS_ROOT="/ashs-1.0.0"
+
+WORKDIR /proc_temp
+
+WORKDIR /state/partition1/pbs/tmpdir
 
 WORKDIR /90days
 
@@ -87,7 +103,19 @@ RUN echo '{ \
     \n        "libxt6", \
     \n        "libxext6", \
     \n        "libxtst6", \
-    \n        "libgl1-mesa-glx" \
+    \n        "libgl1-mesa-glx", \
+    \n        "libc6", \
+    \n        "libice6", \
+    \n        "libsm6", \
+    \n        "libx11-6", \
+    \n        "libxt6:i386", \
+    \n        "libxext6:i386", \
+    \n        "libxtst6:i386", \
+    \n        "libgl1-mesa-glx:i386", \
+    \n        "libc6:i386", \
+    \n        "libice6:i386", \
+    \n        "libsm6:i386", \
+    \n        "libx11-6:i386" \
     \n      ] \
     \n    ], \
     \n    [ \
@@ -117,6 +145,14 @@ RUN echo '{ \
     \n      { \
     \n        "ASHS_ROOT": "/ashs-1.0.0" \
     \n      } \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/proc_temp" \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/state/partition1/pbs/tmpdir" \
     \n    ], \
     \n    [ \
     \n      "workdir", \
@@ -151,6 +187,6 @@ RUN echo '{ \
     \n      "/home/neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-04-13 14:18:22", \
+    \n  "generation_timestamp": "2018-04-23 10:56:19", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json
