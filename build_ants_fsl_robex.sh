@@ -15,6 +15,8 @@ neurodocker generate \
 	--run="tar -xf /ROBEXv12.linux64.tar.gz" \
 	--run="rm /ROBEXv12.linux64.tar.gz" \
 	--run="ln -s /ROBEX/runROBEX.sh /bin" \
+	--run="printf '#!/bin/bash\nls -la' > /usr/bin/ll" \
+        --run="chmod +x /usr/bin/ll" \
 	--workdir /proc_temp \
         --workdir /90days \
         --workdir /30days \
