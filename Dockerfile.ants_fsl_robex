@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-04-23 12:07:39
+# Timestamp: 2018-04-24 14:44:49
 
 FROM ubuntu:xenial
 
@@ -100,6 +100,8 @@ USER neuro
 
 WORKDIR /home/neuro
 
+WORKDIR /state
+
 #--------------------------------------
 # Save container specifications to JSON
 #--------------------------------------
@@ -191,8 +193,12 @@ RUN echo '{ \
     \n    [ \
     \n      "workdir", \
     \n      "/home/neuro" \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/state" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-04-23 12:07:39", \
+    \n  "generation_timestamp": "2018-04-24 14:44:49", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json

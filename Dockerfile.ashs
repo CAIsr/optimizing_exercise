@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-04-23 10:56:19
+# Timestamp: 2018-04-24 14:44:53
 
 FROM ubuntu:xenial
 
@@ -49,6 +49,8 @@ RUN apt-get update -qq \
                                                      libice6:i386 \
                                                      libsm6:i386 \
                                                      libx11-6:i386 \
+                                                     libxt.i686 \
+                                                     libXext.i686 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -65,8 +67,6 @@ RUN chmod +x /usr/bin/ll
 ENV ASHS_ROOT="/ashs-1.0.0"
 
 WORKDIR /proc_temp
-
-WORKDIR /state/partition1/pbs/tmpdir
 
 WORKDIR /90days
 
@@ -85,6 +85,8 @@ RUN useradd --no-user-group --create-home --shell /bin/bash neuro
 USER neuro
 
 WORKDIR /home/neuro
+
+WORKDIR /state
 
 #--------------------------------------
 # Save container specifications to JSON
@@ -115,7 +117,9 @@ RUN echo '{ \
     \n        "libc6:i386", \
     \n        "libice6:i386", \
     \n        "libsm6:i386", \
-    \n        "libx11-6:i386" \
+    \n        "libx11-6:i386", \
+    \n        "libxt.i686", \
+    \n        "libXext.i686" \
     \n      ] \
     \n    ], \
     \n    [ \
@@ -152,10 +156,6 @@ RUN echo '{ \
     \n    ], \
     \n    [ \
     \n      "workdir", \
-    \n      "/state/partition1/pbs/tmpdir" \
-    \n    ], \
-    \n    [ \
-    \n      "workdir", \
     \n      "/90days" \
     \n    ], \
     \n    [ \
@@ -185,8 +185,12 @@ RUN echo '{ \
     \n    [ \
     \n      "workdir", \
     \n      "/home/neuro" \
+    \n    ], \
+    \n    [ \
+    \n      "workdir", \
+    \n      "/state" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-04-23 10:56:19", \
+    \n  "generation_timestamp": "2018-04-24 14:44:53", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json
