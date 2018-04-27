@@ -1,4 +1,5 @@
 *.simg
 .git
 *.tar
+*TRIAL
 *.zip

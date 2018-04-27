@@ -26,8 +26,10 @@ neurodocker generate \
         --workdir /short \
 	--user=neuro \
 	--workdir /home/neuro \
-	--workdir /state \
-	--no-check-urls \
+	--workdir /TMPDIR \
+	--workdir /nvme \
+	--workdir /local \
+ 	--no-check-urls \
 	> Dockerfile.${imageName}
 
 docker build -t ${imageName}:$buildDate -f  Dockerfile.${imageName} .
