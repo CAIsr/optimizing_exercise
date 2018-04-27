@@ -29,7 +29,9 @@ neurodocker generate \
 	-e FSLOUTPUTTYPE=NIFTI_GZ \
 	--user=neuro \
 	--workdir /home/neuro \
-	--workdir /state \
+	--workdir /TMPDIR \
+	--workdir /nvme \
+	--workdir /local \
 	--no-check-urls \
 	> Dockerfile.${imageName}
 

@@ -11,7 +11,7 @@ buildDate=`date +%Y%m%d`
 neurodocker generate \
 	--base ubuntu:xenial \
 	--pkg-manager apt \
-	--install libxt6 libxext6 libxtst6 libgl1-mesa-glx libc6 libice6 libsm6 libx11-6 libxt6:i386 libxext6:i386 libxtst6:i386 libgl1-mesa-glx:i386 libc6:i386 libice6:i386 libsm6:i386 libx11-6:i386 libxt.i686 libXext.i686 \
+	--install libxt6 libxext6 libxtst6 libgl1-mesa-glx libc6 libice6 libsm6 libx11-6 \
 	--copy ashs_atlas_upennpmc_20170810 /ashs_atlas_upennpmc_20170810 \
         --copy ashs-1.0.0/ /ashs-1.0.0 \
         --run="printf '#!/bin/bash\nls -la' > /usr/bin/ll" \
@@ -24,11 +24,11 @@ neurodocker generate \
        	--workdir /RDS \
 	--workdir /data \
         --workdir /short \
-	--user=neuro \
 	--workdir /home/neuro \
 	--workdir /TMPDIR \
 	--workdir /nvme \
 	--workdir /local \
+	--user=neuro \
  	--no-check-urls \
 	> Dockerfile.${imageName}
 
@@ -40,7 +40,7 @@ docker build -t ${imageName}:$buildDate -f  Dockerfile.${imageName} .
 
 
 docker tag ${imageName}:$buildDate caid/${imageName}:$buildDate
-#docker login
+docker login
 docker push caid/${imageName}:$buildDate
 docker tag ${imageName}:$buildDate caid/${imageName}:latest
 docker push caid/${imageName}:latest
