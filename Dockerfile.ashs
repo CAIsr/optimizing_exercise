@@ -5,7 +5,7 @@
 # pull request on our GitHub repository:
 #     https://github.com/kaczmarj/neurodocker
 #
-# Timestamp: 2018-04-27 13:01:33
+# Timestamp: 2018-04-27 16:05:00
 
 FROM ubuntu:xenial
 
@@ -41,16 +41,6 @@ RUN apt-get update -qq \
                                                      libice6 \
                                                      libsm6 \
                                                      libx11-6 \
-                                                     libxt6:i386 \
-                                                     libxext6:i386 \
-                                                     libxtst6:i386 \
-                                                     libgl1-mesa-glx:i386 \
-                                                     libc6:i386 \
-                                                     libice6:i386 \
-                                                     libsm6:i386 \
-                                                     libx11-6:i386 \
-                                                     libxt.i686 \
-                                                     libXext.i686 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -113,17 +103,7 @@ RUN echo '{ \
     \n        "libc6", \
     \n        "libice6", \
     \n        "libsm6", \
-    \n        "libx11-6", \
-    \n        "libxt6:i386", \
-    \n        "libxext6:i386", \
-    \n        "libxtst6:i386", \
-    \n        "libgl1-mesa-glx:i386", \
-    \n        "libc6:i386", \
-    \n        "libice6:i386", \
-    \n        "libsm6:i386", \
-    \n        "libx11-6:i386", \
-    \n        "libxt.i686", \
-    \n        "libXext.i686" \
+    \n        "libx11-6" \
     \n      ] \
     \n    ], \
     \n    [ \
@@ -203,6 +183,6 @@ RUN echo '{ \
     \n      "neuro" \
     \n    ] \
     \n  ], \
-    \n  "generation_timestamp": "2018-04-27 13:01:33", \
+    \n  "generation_timestamp": "2018-04-27 16:05:00", \
     \n  "neurodocker_version": "0.3.2" \
     \n}' > /neurodocker/neurodocker_specs.json

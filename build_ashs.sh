@@ -35,12 +35,12 @@ neurodocker generate \
 docker build -t ${imageName}:$buildDate -f  Dockerfile.${imageName} .
 
 #test:
-#docker run -it ${imageName}:$buildDate
+docker run -it ${imageName}:$buildDate
 #exit 0
 
 
 docker tag ${imageName}:$buildDate caid/${imageName}:$buildDate
-docker login
+#docker login
 docker push caid/${imageName}:$buildDate
 docker tag ${imageName}:$buildDate caid/${imageName}:latest
 docker push caid/${imageName}:latest
