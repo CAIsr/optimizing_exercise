@@ -4,5 +4,8 @@
 
 
 ```
+This repository contains singularity and docker images for the analysis pipelines used in the project "Optimising Exercise".
+
+
 ./build_*.sh
 ```
