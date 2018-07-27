@@ -1,4 +1,3 @@
-
 imageName='ashs'
 buildDate=`date +%Y%m%d`
 
@@ -8,8 +7,8 @@ buildDate=`date +%Y%m%d`
 #upgrade neurodocker
 #pip install --no-cache-dir https://github.com/kaczmarj/neurodocker/tarball/master --upgrade
 
-neurodocker generate \
-	--base ubuntu:xenial \
+neurodocker generate docker \
+	--base=neurodebian:stretch-non-free \
 	--pkg-manager apt \
 	--install libxt6 libxext6 libxtst6 libgl1-mesa-glx libc6 libice6 libsm6 libx11-6 \
 	--copy ashs_atlas_upennpmc_20170810 /ashs_atlas_upennpmc_20170810 \
@@ -17,6 +16,8 @@ neurodocker generate \
         --run="printf '#!/bin/bash\nls -la' > /usr/bin/ll" \
         --run="chmod +x /usr/bin/ll" \
 	--env ASHS_ROOT=/ashs-1.0.0 \
+	--copy ashs_template_qsub_float_conversion.sh ashs-1.0.0/bin/ashs_template_qsub.sh \
+	--run "chmod +rwx /ashs-1.0.0/bin/ashs_template_qsub.sh" \
 	--workdir /proc_temp \
         --workdir /90days \
         --workdir /30days \
@@ -29,7 +30,6 @@ neurodocker generate \
 	--workdir /nvme \
 	--workdir /local \
 	--user=neuro \
- 	--no-check-urls \
 	> Dockerfile.${imageName}
 
 docker build -t ${imageName}:$buildDate -f  Dockerfile.${imageName} .
